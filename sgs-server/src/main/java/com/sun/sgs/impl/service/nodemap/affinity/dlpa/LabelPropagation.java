@@ -779,7 +779,7 @@ public class LabelPropagation extends AbstractLPA implements LPAClient {
                                      "(" + entry.getValue() + ") ");
                     }
                     Long value = labelMap.containsKey(label) ?
-                                    labelMap.get(label) : 0;
+                                    labelMap.get(label) : 0L;
                     value += entry.getValue();
                     labelMap.put(label, value);
                     if (value > maxCount) {

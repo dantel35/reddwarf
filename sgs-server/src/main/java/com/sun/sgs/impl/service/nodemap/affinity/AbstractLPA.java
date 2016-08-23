@@ -246,7 +246,7 @@ public abstract class AbstractLPA extends BasicState {
         for (WeightedEdge edge : edges) {
             LabelVertex neighbor = graph.getOpposite(vertex, edge);
             Integer label = neighbor.getLabel();
-            Long value = labelMap.containsKey(label) ? labelMap.get(label) : 0;
+            Long value = labelMap.containsKey(label) ? labelMap.get(label) : 0L;
             if (logger.isLoggable(Level.FINEST)) {
                 logSB.append(neighbor + "(" + edge.getWeight() + ") ");
             }
