@@ -1,0 +1,7 @@
+
+description = 'RedDwarf Stopper'
+dependencies {
+  compile project(':sgs-boot')
+  compile project(':sgs-server-internal-api')
+    testCompile group: 'junit', name: 'junit', version:'4.7'
+}

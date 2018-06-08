@@ -1,0 +1,5 @@
+
+description = 'RedDwarf Server Tutorial'
+dependencies {
+  providedCompile project(':sgs-server-api')
+}

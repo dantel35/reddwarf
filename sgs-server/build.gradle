@@ -1,0 +1,12 @@
+
+description = 'RedDwarf Server'
+dependencies {
+  compile project(':sgs-server-api')
+  compile project(':sgs-server-internal-api')
+    compile group: 'org.reddwarfserver.server', name: 'sgs-shared', version:'1.12'
+    compile group: 'net.sf.jung', name: 'jung-graph-impl', version:'2.0'
+    testCompile group: 'junit', name: 'junit', version:'4.7'
+    testCompile group: 'org.easymock', name: 'easymock', version:'2.5.2'
+    testCompile group: 'org.reddwarfserver.client', name: 'sgs-client', version:'0.10.0'
+    testCompile group: 'org.reddwarfserver.tools.test', name: 'sgs-test-ext', version:'1.2'
+}

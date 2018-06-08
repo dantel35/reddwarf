@@ -45,6 +45,7 @@
 
 
   <build>
+  <pluginManagement>
     <plugins>
 
       <!-- Retrieve the sources artifacts of each of the
@@ -276,6 +277,7 @@
 
 
     </plugins>
+     </pluginManagement>
   </build>
 
   <reporting>

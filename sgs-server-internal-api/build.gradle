@@ -1,0 +1,5 @@
+
+description = 'RedDwarf Server Internal API'
+dependencies {
+  compile project(':sgs-server-api')
+}

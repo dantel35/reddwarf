@@ -1,0 +1,8 @@
+
+description = 'RedDwarf Server Javadoc'
+dependencies {
+    compile group: 'org.reddwarfserver.server', name: 'sgs-shared', version:'1.12', classifier:'sources'
+  compile project(':sgs-server')
+  compile project(':sgs-server-internal-api')
+  compile project(':sgs-server-api')
+}

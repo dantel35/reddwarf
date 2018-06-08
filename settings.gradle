@@ -1,0 +1,20 @@
+rootProject.name = 'sgs-server-parent'
+include ':sgs-boot'
+include ':sgs-stop'
+include ':sgs-server'
+include ':sgs-server-api'
+include ':sgs-server-dist'
+include ':sgs-server-javadoc'
+include ':sgs-server-internal-api'
+include ':sgs-tutorial-server'
+include ':sgs-tutorial-server-dist'
+
+project(':sgs-boot').projectDir = "$rootDir/sgs-boot" as File
+project(':sgs-stop').projectDir = "$rootDir/sgs-stop" as File
+project(':sgs-server').projectDir = "$rootDir/sgs-server" as File
+project(':sgs-server-api').projectDir = "$rootDir/sgs-server-api" as File
+project(':sgs-server-dist').projectDir = "$rootDir/sgs-server-dist" as File
+project(':sgs-server-javadoc').projectDir = "$rootDir/sgs-server-javadoc" as File
+project(':sgs-server-internal-api').projectDir = "$rootDir/sgs-server-internal-api" as File
+project(':sgs-tutorial-server').projectDir = "$rootDir/sgs-tutorial-server" as File
+project(':sgs-tutorial-server-dist').projectDir = "$rootDir/sgs-tutorial-server-dist" as File
