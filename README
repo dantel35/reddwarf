@@ -13,7 +13,7 @@ HOST: github.com
 Repository path: /dantel35/reddwarf-gradle.git
 Protocol: https
 everything else empty.
-6. Next --> Next --> Choose a directory of zour liking. --> Next
+6. Next --> Next --> Choose a directory of your liking. --> Next
 7. Import as general project --> Next ...-> Finish.
 8. Right click on project in Project Explorer --> Configure --> add gradle nature
 
