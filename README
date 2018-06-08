@@ -1,3 +1,26 @@
+Converted to gradle project (WIP).
+
+Use in Eclipse:
+(Assuming you have git and gradle installed in Eclipse)
+1. Open Eclipse.
+2. Copy git URL (https://github.com/dantel35/reddwarf-gradle.git)
+3. Eclipse --> right click in Project Explorer --> Import --> Import...
+4. Git --> Projects from git --> Next
+5. Eclipse should take the copied URL and prefill the "Source git repository" dialogue.
+Otherwise:
+URI: https://github.com/dantel35/reddwarf-gradle.git
+HOST: github.com
+Repository path: /dantel35/reddwarf-gradle.git
+Protocol: https
+everything else empty.
+6. Next --> Next --> Choose a directory of zour liking. --> Next
+7. Import as general project --> Next ...-> Finish.
+8. Right click on project in Project Explorer --> Configure --> add gradle nature
+
+There you go.
+
+
+
 This is the github release of Reddwarf server, formerly Project Darkstar.
 
 This repository is converted from a compilation of SVN repositories:
