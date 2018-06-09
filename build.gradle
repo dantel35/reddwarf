@@ -4,6 +4,7 @@ allprojects  {
 
   group = 'org.reddwarfserver.server'
 version = '0.10.3-SNAPSHOT'
+
 }
 
 subprojects {
@@ -21,13 +22,19 @@ subprojects {
     maven { url "http://download.java.net/maven/2/" }
     maven { url "http://download.oracle.com/maven" }
     maven { url "http://repo.maven.apache.org/maven2" }
+    
   }
 
   configurations.all {
 }
   dependencies {
     compile group: 'com.sleepycat', name: 'je', version:'4.1.10'
+//    compile group: 'com.sleepycat', name: 'je', version:'5.0.84'
+    //  compile group: 'com.sleepycat', name: 'je', version:'7.4.5'
     compile group: 'org.reddwarfserver.ext.berkeleydb', name: 'db', version:'4.5.20'
+// https://mvnrepository.com/artifact/commons-io/commons-io
+compile group: 'commons-io', name: 'commons-io', version: '2.5'
+
 }
 
   

@@ -183,8 +183,8 @@ public class TestExtJarGraph {
 
     @Test public void testJarMergedServices() throws Exception {
         ExtJarGraph graph = new ExtJarGraph();
-        graph.addJarFile(new JarFile(JAR_C_WITH_SERVICES));
         graph.addJarFile(new JarFile(JAR_B_WITH_SERVICES));
+        graph.addJarFile(new JarFile(JAR_C_WITH_SERVICES));
         String fileName = graph.getPropertiesFile();
         Properties p = new Properties();
         p.load(new FileInputStream(fileName));
@@ -208,10 +208,14 @@ public class TestExtJarGraph {
         graph.addJarFile(new JarFile(JAR_A_WITH_SERVICES));
         String fileName = graph.getPropertiesFile();
         Properties p = new Properties();
+      
+        
         p.load(new FileInputStream(fileName));
         Assert.assertTrue(p.getProperty("com.sun.sgs.ext.services").
                 equals("com.example.Service5:com.example.Service6:" +
                        "com.example.Service7:com.example.Service1"));
+        
+        
         Assert.assertTrue(p.getProperty("com.sun.sgs.ext.managers").
                 equals("com.example.Manager5:com.example.Manager6:" +
                        "com.example.Manager7:"));

@@ -463,7 +463,7 @@ public class TaskServiceImpl
                     }
                 }, taskOwner);
         } catch (Exception e) {
-            throw new AssertionError("Failed to setup node-local sets");
+            throw new AssertionError("Failed to setup node-local sets " + e.getMessage());
         }
 
         // assert that the application identity is active, so that there

@@ -5,3 +5,9 @@ dependencies {
   compile project(':sgs-server-internal-api')
     testCompile group: 'junit', name: 'junit', version:'4.7'
 }
+jar {
+    manifest.attributes(
+            'Class-Path': configurations.runtime.files.collect { it.name }.join(' ') + ' ../config',
+           'Main-Class': 'com.sun.sgs.system.stop.Stop'
+    )
+}

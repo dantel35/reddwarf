@@ -45,14 +45,23 @@ import com.sun.sgs.service.TaskService;
 import com.sun.sgs.service.TransactionProxy;
 import com.sun.sgs.service.WatchdogService;
 import static com.sun.sgs.test.util.UtilProperties.createProperties;
+
 import java.io.File;
+import java.io.IOException;
+//import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * A node, used for testing.  The node is created using the kernel.
@@ -258,10 +267,13 @@ public class SgsTestNode {
             createDirectory(dbDirectory);
         }
 
+       
         kernel = kernelCtor.newInstance(props);
+			
         txnProxy = (TransactionProxy) kernelProxy.get(kernel);
         systemRegistry = (ComponentRegistry) kernelReg.get(kernel);
 
+       
         dataService = getService(DataService.class);
         watchdogService = getService(WatchdogService.class);
         nodeMappingService = getService(NodeMappingService.class);
@@ -282,6 +294,9 @@ public class SgsTestNode {
                             com.sun.sgs.impl.transport.tcp.TcpTransport.DEFAULT_PORT :
                             Integer.parseInt(portProp);
         }
+        
+     
+        
     }
 
     /**
@@ -515,6 +530,7 @@ public class SgsTestNode {
     /** Creates the specified directory, if it does not already exist. */
     private static void createDirectory(String directory) {
         File dir = new File(directory);
+       
         if (!dir.exists()) {
             if (!dir.mkdir()) {
                 throw new RuntimeException(
@@ -526,16 +542,38 @@ public class SgsTestNode {
     /** Deletes the specified directory, if it exists. */
     private static void deleteDirectory(String directory) {
         File dir = new File(directory);
+       
         if (dir.exists()) {
-            for (File f : dir.listFiles()) {
-                if (!f.delete()) {
-                    throw new RuntimeException("Failed to delete file: " + f);
-                }
-            }
-            if (!dir.delete()) {
-                throw new RuntimeException(
-                    "Failed to delete directory: " + dir);
-            }
+        	try {
+				FileUtils.forceDelete(dir);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+//            for (File f : dir.listFiles()) {
+//                
+//            	 Path path = dir.toPath();
+////            	if (!f.delete()) {
+////                    throw new RuntimeException("Failed to delete file: " + f);
+////                }
+////            	 if (!input.delete()) {
+////                     throw new RuntimeException("Failed to delete file: " + f);
+////                 }
+//            	 try {
+//            		    Files.delete(path);
+//            		} catch (NoSuchFileException x) {
+//            		    System.err.format("%s: no such" + " file or directory%n", path);
+//            		} catch (DirectoryNotEmptyException x) {
+//            		    System.err.format("%s not empty%n", path);
+//            		} catch (IOException x) {
+//            		    // File permission problems are caught here.
+//            		    System.err.println(x);
+//            		}
+//            }
+//            if (!dir.delete()) {
+//                throw new RuntimeException(
+//                    "Failed to delete directory: " + dir);
+//            }
         }
     }
 

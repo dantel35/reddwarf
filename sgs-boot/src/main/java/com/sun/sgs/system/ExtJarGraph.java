@@ -26,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -46,10 +48,10 @@ class ExtJarGraph {
 
     // a map of all extension jars
     private final Map<String, JarNode> extNodes =
-        new HashMap<String, JarNode>();
+        new LinkedHashMap<String, JarNode>(); //was HashMap
 
     // a collection of jars that depend on other jars
-    private final Set<JarNode> dependencyRoots = new HashSet<JarNode>();
+    private final Set<JarNode> dependencyRoots = new LinkedHashSet<JarNode>(); //was HashSet
 
     // whether or not any preferences or dependencies are defined by the
     // the set of extension jars
@@ -236,8 +238,10 @@ class ExtJarGraph {
                                  StringBuilder authenticatorsLine,
                                  StringBuilder profileListenersLine)
     {
+    	System.out.println("Build props");
         // gather properties from depdencies first
         for (JarNode dNode : node.dNodes) {
+        	System.out.println("Loopin..");
             buildProperties(dNode, p, servicesLine, managersLine, nodeTypesLine,
                             authenticatorsLine, profileListenersLine);
         }
@@ -255,6 +259,7 @@ class ExtJarGraph {
                     "com.sun.sgs.services.node.types");
             int nodeTypeCount = getElementCount(nodeTypes);
 
+            
             // verify that the manager and service counts line up, or if
             // there are no managers then there is at most only one service
             if (managerCount != 0) {

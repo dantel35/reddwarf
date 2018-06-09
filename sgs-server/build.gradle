@@ -10,3 +10,9 @@ dependencies {
     testCompile group: 'org.reddwarfserver.client', name: 'sgs-client', version:'0.10.0'
     testCompile group: 'org.reddwarfserver.tools.test', name: 'sgs-test-ext', version:'1.2'
 }
+jar {
+    manifest.attributes(
+            'Class-Path': configurations.runtime.files.collect { it.name }.join(' ') + ' ../config',
+           'Main-Class': 'com.sun.sgs.impl.kernel.Kernel'
+    )
+}
