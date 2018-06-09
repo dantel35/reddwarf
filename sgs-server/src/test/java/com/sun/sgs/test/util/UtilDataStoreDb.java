@@ -50,17 +50,28 @@ public final class UtilDataStoreDb {
     public static EnvironmentType getEnvironmentType(Properties properties) {
 	String className = properties.getProperty(
 	    DataStoreImpl.ENVIRONMENT_CLASS_PROPERTY);
-	if (className == null ||
-	    className.equals(
-		"com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment"))
+	if (className == null)
 	{
-	    return EnvironmentType.BDB;
-	} else if (className.equals(
+		System.out.println("classname is null");
+	}
+	else if (className.equals(
+			"com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment"))
+	{
+		System.out.println("is BdbEnvironment equal");
+	}
+	
+	 if (className == null ||className.equals(
 		       "com.sun.sgs.impl.service.data.store.db.je." +
 		       "JeEnvironment"))
 	{
 	    return EnvironmentType.JE;
-	} else {
+	}
+	else if (
+	    className.equals(
+		"com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment"))
+	{
+	    return EnvironmentType.BDB;
+	}  else {
 	    throw new RuntimeException(
 		"Unknown environment class: " + className);
 	}
@@ -75,6 +86,7 @@ public final class UtilDataStoreDb {
     public static String getLockTimeoutPropertyName(
 	Properties properties)
     {
+    	
 	switch (getEnvironmentType(properties)) {
 	case BDB:
 	    return BdbEnvironment.LOCK_TIMEOUT_PROPERTY;

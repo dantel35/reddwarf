@@ -22,13 +22,14 @@
 package com.sun.sgs.impl.service.data.store.db.je;
 
 import com.sleepycat.je.DatabaseException;
-import com.sleepycat.je.DeadlockException;
+//import com.sleepycat.je.DeadlockException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.EnvironmentFailureException;
 import com.sleepycat.je.ExceptionEvent;
 import com.sleepycat.je.ExceptionListener;
-import com.sleepycat.je.LockNotGrantedException;
-import com.sleepycat.je.RunRecoveryException;
+import com.sleepycat.je.LockConflictException;
+import com.sleepycat.je.LockNotAvailableException;
 import com.sleepycat.je.StatsConfig;
 import com.sleepycat.je.TransactionConfig;
 import com.sleepycat.je.XAEnvironment;
@@ -346,6 +347,20 @@ public class JeEnvironment implements DbEnvironment {
 	long lockTimeoutMicros = (lockTimeout < (Long.MAX_VALUE / 1000))
 	    ? lockTimeout * 1000 : 0;
 	long stats = wrappedProps.getLongProperty(STATS_PROPERTY, -1);
+	
+	System.out.println("lockTimeoutMicros: " + lockTimeoutMicros
+			+ "\n lockTimeout " + lockTimeout 
+			+ "\n txnTimeout " + txnTimeout
+			+ "\n Long.MAX_VALUE " + Long.MAX_VALUE 
+			+ "\n Long.MAX_VALUE/ 1000 " + (Long.MAX_VALUE / 1000)
+			+ "\n TransactionCoordinator.TXN_TIMEOUT_PROPERTY " +TransactionCoordinator.TXN_TIMEOUT_PROPERTY
+			+ "\n LOCK_TIMEOUT_PROPERTY " +LOCK_TIMEOUT_PROPERTY
+
+			
+
+			);
+	
+	
 	TxnIsolationLevel txnIsolation = wrappedProps.getEnumProperty(
 	    TXN_ISOLATION_PROPERTY, TxnIsolationLevel.class,
 	    TxnIsolationLevel.SERIALIZABLE);
@@ -382,9 +397,18 @@ public class JeEnvironment implements DbEnvironment {
 	 * detected.  Setting the value on the transaction appears to have no
 	 * effect on deadlock detection.  -tjb@sun.com (11/05/2007)
 	 */
- 	config.setLockTimeout(lockTimeoutMicros);
+	System.out.println("LockTimeoutMicros " + lockTimeoutMicros);
+ 	config.setLockTimeout(lockTimeoutMicros,java.util.concurrent.TimeUnit.MICROSECONDS);
 	config.setTransactional(true);
-	config.setTxnWriteNoSync(!flushToDisk);
+//	config.setTxnWriteNoSync(!flushToDisk);
+	if (!flushToDisk)
+	{
+		config.setDurability(com.sleepycat.je.Durability.COMMIT_NO_SYNC);		
+	}
+	else
+	{
+		config.setDurability(com.sleepycat.je.Durability.COMMIT_SYNC);
+	}
 	for (Enumeration<?> names = propertiesWithDefaults.propertyNames();
 	     names.hasMoreElements(); )
 	{
@@ -446,13 +470,13 @@ public class JeEnvironment implements DbEnvironment {
     static RuntimeException convertException(
 	Exception e, boolean convertTxnExceptions)
     {
-	if (convertTxnExceptions && e instanceof LockNotGrantedException) {
+	if (convertTxnExceptions && e instanceof LockNotAvailableException) {
 	    return new TransactionTimeoutException(
 		"Transaction timed out: " + e.getMessage(), e);
-	} else if (convertTxnExceptions && e instanceof DeadlockException) {
+	} else if (convertTxnExceptions && e instanceof LockConflictException) { //was DeadlockException
 	    return new TransactionConflictException(
 		"Transaction conflict: " + e.getMessage(), e);
-	} else if (e instanceof RunRecoveryException) {
+	} else if (e instanceof EnvironmentFailureException) {
 	    /*
 	     * It is tricky to clean up the data structures in this instance in
 	     * order to reopen the Berkeley DB databases, because it's hard to
@@ -484,7 +508,7 @@ public class JeEnvironment implements DbEnvironment {
     /** Returns the lock timeout in microseconds -- for testing. */
     private long getLockTimeoutMicros() {
 	try {
-	    return env.getConfig().getLockTimeout();
+	    return env.getConfig().getLockTimeout(java.util.concurrent.TimeUnit.MICROSECONDS);
 	} catch (DatabaseException e) {
 	    throw convertException(e, false);
 	}
@@ -524,6 +548,7 @@ public class JeEnvironment implements DbEnvironment {
 	}
 	try {
 	    env.close();
+	    System.out.println("Closing Environment");
 	} catch (DatabaseException e) {
 	    throw convertException(e, false);
 	}

@@ -108,7 +108,7 @@ class JeTransaction implements DbTransaction {
 	    /* Avoid overflow -- BDB treats 0 as unlimited */
 	    long timeoutMicros =
 		(timeout < (Long.MAX_VALUE / 1000)) ? timeout * 1000 : 0;
-	    txn.setTxnTimeout(timeoutMicros);
+	    txn.setTxnTimeout(timeoutMicros,java.util.concurrent.TimeUnit.MICROSECONDS);
 	} catch (DatabaseException e) {
 	    throw JeEnvironment.convertException(e, false);
 	}

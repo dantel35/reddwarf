@@ -548,7 +548,7 @@ public class SgsTestNode {
 				FileUtils.forceDelete(dir);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				  throw new RuntimeException("Failed to delete file: "  + e.getMessage());
 			}
 //            for (File f : dir.listFiles()) {
 //                

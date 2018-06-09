@@ -33,7 +33,11 @@ import static com.sun.sgs.test.util.UtilDataStoreDb.getLockTimeoutPropertyName;
 import static com.sun.sgs.test.util.UtilProperties.createProperties;
 import com.sun.sgs.tools.test.FilteredNameRunner;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Properties;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,6 +72,7 @@ public class TestDbEnvironment extends Assert {
     public void setUp() throws Exception {
 	cleanDirectory(dbDirectory);
 	props = createProperties();
+	System.setProperty( DataStoreImpl.ENVIRONMENT_CLASS_PROPERTY, "com.sun.sgs.impl.service.data.store.db.je.JeEnvironment");
     }
 
     /** Closes the environment, if present. */
@@ -75,6 +80,7 @@ public class TestDbEnvironment extends Assert {
     public void tearDown() throws Exception {
 	if (env != null) {
 	    env.close();
+	    cleanDirectory(dbDirectory);
 	    env = null;
 	}
     }
@@ -88,7 +94,7 @@ public class TestDbEnvironment extends Assert {
 	props.setProperty(lockTimeoutPropertyName, "-1");
 	try {
 	    getEnvironment(props);
-	    fail("Expected IllegalArgumentException");
+	    fail("Expected IllegalArgumentException"); //this can not happen...
 	} catch (IllegalArgumentException e) {
 	    System.err.println(e);
 	}
@@ -149,7 +155,10 @@ public class TestDbEnvironment extends Assert {
 
     @Test
     public void testLockTimeoutSpecified() {
+    	System.setProperty( DataStoreImpl.ENVIRONMENT_CLASS_PROPERTY, "com.sun.sgs.impl.service.data.store.db.je.JeEnvironment");
+
 	props.setProperty(lockTimeoutPropertyName, "1");
+	System.out.println(lockTimeoutPropertyName + " lockTimeoutProperteyName");
 	env = getEnvironment(props);
 	assertEquals(1000, getLockTimeoutMicros(env));
 	env.close();
@@ -162,6 +171,8 @@ public class TestDbEnvironment extends Assert {
     public void testLockTimeoutSpecifiedOverflow() {
 	props.setProperty(lockTimeoutPropertyName,
 			  String.valueOf((Long.MAX_VALUE / 1000) + 1));
+	System.out.println(lockTimeoutPropertyName + " lockTimeoutSpecifiedOverflow");
+
 	env = getEnvironment(props);
 	assertEquals(0, getLockTimeoutMicros(env));
 	env.close();
@@ -177,7 +188,9 @@ public class TestDbEnvironment extends Assert {
     static DbEnvironment getEnvironment(Properties properties) {
         return (new PropertiesWrapper(properties)).getClassInstanceProperty(
                 DataStoreImpl.ENVIRONMENT_CLASS_PROPERTY,
-                "com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment",
+//                "com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment",
+                "com.sun.sgs.impl.service.data.store.db.je.JeEnvironment",
+
                 DbEnvironment.class,
                 new Class<?>[]{
                     String.class, Properties.class, ComponentRegistry.class,
@@ -192,9 +205,17 @@ public class TestDbEnvironment extends Assert {
 	File dir = new File(directory);
 	if (dir.exists()) {
 	    for (File f : dir.listFiles()) {
-		if (!f.delete()) {
-		    throw new RuntimeException("Failed to delete file: " + f);
-		}
+		Path path = f.toPath();
+	    try {
+			FileUtils.forceDelete(f);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+			 throw new RuntimeException("Failed to delete file: " + f + e.getMessage());
+		}	
+//	    	if (!f.delete()) {
+//		    throw new RuntimeException("Failed to delete file: " + f);
+//		}
 	    }
 	    if (!dir.delete()) {
 		throw new RuntimeException(

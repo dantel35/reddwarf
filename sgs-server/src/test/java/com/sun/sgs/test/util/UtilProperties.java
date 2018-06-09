@@ -55,6 +55,7 @@ public class UtilProperties {
 		    property.startsWith("java.rmi.") ||
 		    property.startsWith("je."))
 		{
+			System.out.println("Adding property " + property + " = " + System.getProperty(property));
 		    props.setProperty(property, System.getProperty(property));
 		}
 	    }
